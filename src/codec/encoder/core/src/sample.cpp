@@ -343,6 +343,19 @@ void WelsInitSampleSadFunc (SWelsFuncPtrList* pFuncList, uint32_t uiCpuFlag) {
   pFuncList->sSampleDealingFuncs.pfSampleSad[BLOCK_8x4  ] = WelsSampleSad8x4_c;
   pFuncList->sSampleDealingFuncs.pfSampleSad[BLOCK_4x8  ] = WelsSampleSad4x8_c;
 
+#if defined(HAVE_RVV)
+  /* RVV：只接宽度 >= 8 的块。K3 实测（kernel_sad，300k 次）：
+       8x8 1.36x、16x16 2.91x、8x4 1.31x；
+     但 4x4 0.62x、4x8 0.79x —— 宽度 4 时每次只有 4 字节进向量，
+     vsetvl + 尾部归约的固定开销盖过算术量，负收益。
+     所以 4x4 / 4x8 保留 C 版指针，openh264 的亚分区搜索仍走标量。 */
+  pFuncList->sSampleDealingFuncs.pfSampleSad[BLOCK_16x16] = WelsSampleSad16x16_rvv;
+  pFuncList->sSampleDealingFuncs.pfSampleSad[BLOCK_16x8 ] = WelsSampleSad16x8_rvv;
+  pFuncList->sSampleDealingFuncs.pfSampleSad[BLOCK_8x16 ] = WelsSampleSad8x16_rvv;
+  pFuncList->sSampleDealingFuncs.pfSampleSad[BLOCK_8x8  ] = WelsSampleSad8x8_rvv;
+  pFuncList->sSampleDealingFuncs.pfSampleSad[BLOCK_8x4  ] = WelsSampleSad8x4_rvv;
+#endif
+
   //pfSampleSatd init
   pFuncList->sSampleDealingFuncs.pfSampleSatd[BLOCK_16x16] = WelsSampleSatd16x16_c;
   pFuncList->sSampleDealingFuncs.pfSampleSatd[BLOCK_16x8 ] = WelsSampleSatd16x8_c;

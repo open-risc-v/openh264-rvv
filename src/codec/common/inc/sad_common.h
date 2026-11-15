@@ -42,6 +42,18 @@ int32_t WelsSampleSad16x8_c (uint8_t*, int32_t, uint8_t*, int32_t);
 int32_t WelsSampleSad8x16_c (uint8_t*, int32_t, uint8_t*, int32_t);
 int32_t WelsSampleSad8x8_c (uint8_t*, int32_t, uint8_t*, int32_t);
 int32_t WelsSampleSad8x4_c( uint8_t *, int32_t, uint8_t *, int32_t );
+
+#if defined(HAVE_RVV)
+/* RVV 内核（codec/common/riscv/sad_rvv.c），由 WelsInitSampleSadFunc 在
+   HAVE_RVV 时覆盖 C 版指针；A/B 的唯一变量就是这个宏。 */
+int32_t WelsSampleSad4x4_rvv (uint8_t*, int32_t, uint8_t*, int32_t);
+int32_t WelsSampleSad8x8_rvv (uint8_t*, int32_t, uint8_t*, int32_t);
+int32_t WelsSampleSad16x16_rvv (uint8_t*, int32_t, uint8_t*, int32_t);
+int32_t WelsSampleSad16x8_rvv (uint8_t*, int32_t, uint8_t*, int32_t);
+int32_t WelsSampleSad8x16_rvv (uint8_t*, int32_t, uint8_t*, int32_t);
+int32_t WelsSampleSad8x4_rvv (uint8_t*, int32_t, uint8_t*, int32_t);
+int32_t WelsSampleSad4x8_rvv (uint8_t*, int32_t, uint8_t*, int32_t);
+#endif
 int32_t WelsSampleSad4x8_c( uint8_t *, int32_t, uint8_t *, int32_t );
 int32_t WelsSampleSad4x4_c (uint8_t*, int32_t, uint8_t*, int32_t);
 

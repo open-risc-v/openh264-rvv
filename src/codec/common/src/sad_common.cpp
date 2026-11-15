@@ -39,6 +39,11 @@
  */
 
 #include "sad_common.h"
+
+#if defined(HAVE_RVV)
+/* 直接并入同一 TU：不新增构建系统的源文件条目，A/B 只差一个宏。 */
+#include "../riscv/sad_rvv.c"
+#endif
 #include "macros.h"
 
 int32_t WelsSampleSad4x4_c (uint8_t* pSample1, int32_t iStride1, uint8_t* pSample2, int32_t iStride2) {
